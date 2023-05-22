@@ -1,10 +1,14 @@
+# CMakeLists.txt from protobuf/examples
+# modified for scg_test
+
 # Minimum CMake required
 cmake_minimum_required(VERSION 2.8.12)
 
 # Project
-project(protobuf-examples)
+project(scg_test)
 
 # Find required protobuf package
+set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "C:/vcpkg-2023.04.15/packages/protobuf_x64-windows")
 find_package(protobuf CONFIG REQUIRED)
 
 if(protobuf_VERBOSE)
@@ -24,13 +28,15 @@ if(MSVC AND protobuf_MSVC_STATIC_RUNTIME)
   endforeach()
 endif()
 
-foreach(example add_person list_people)
-  set(${example}_SRCS ${example}.cc)
-  set(${example}_PROTOS addressbook.proto)
+foreach(example scg_test)
+  set(PROTO_IN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/protodef)
+  set(${example}_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/${example}.cpp)
+  set(${example}_PROTOS ${PROTO_IN_DIR}/${example}.proto)
 
   #Code Generation
+  set(PROTO_OUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/protodef/protoFiles)
   if(protobuf_MODULE_COMPATIBLE) #Legacy Support
-    protobuf_generate_cpp(${example}_PROTO_SRCS ${example}_PROTO_HDRS ${${example}_PROTOS})
+    protobuf_generate_cpp(${PROTO_OUT_DIR}/${example}_PROTO_SRCS ${PROTO_OUT_DIR}/${example}_PROTO_HDRS ${${example}_PROTOS})
     list(APPEND ${example}_SRCS ${${example}_PROTO_SRCS} ${${example}_PROTO_HDRS})
   endif()
 
