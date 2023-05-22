@@ -1,0 +1,10 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package SCG.Test;
+
+message TestMessage
+{
+    google.protobuf.Timestamp Timestamp = 1;
+    string Notes = 2;
+}
