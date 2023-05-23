@@ -24,7 +24,7 @@ Please follow the build instructions described below for your language of choice
 * Build the solution
 * Run the scg_test target
 
-## S# Solution
+## C# Solution
 
 * Open the scg_test.sln in the source_cs folder
 * Build the solution
