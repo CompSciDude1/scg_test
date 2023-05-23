@@ -8,18 +8,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="..\protodef\.gitkeep" Link="protodef\.gitkeep" />
+    <Content Include="..\protodef\scg_test.proto" Link="protodef\scg_test.proto" />
+    <Content Include="..\protodef\protoFiles\.gitkeep" Link="protodef\protoFiles\.gitkeep" />
+    <Compile Include="..\protodef\protoFiles\ScgTest.cs" Link="protodef\protoFiles\ScgTest.cs" />
+    <Content Include="..\protomessage\.gitkeep" Link="protomessage\.gitkeep" />
+    <Content Include="..\protomessage\scg_test.pb" Link="protomessage\scg_test.pb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.23.1" GeneratePathProperty="true" />
     <PackageReference Include="Google.Protobuf.Tools" Version="3.23.1" GeneratePathProperty="true" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="protomessage\scg_test.pb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="$(PkgGoogle_Protobuf_Tools)\tools\windows_x64\protoc.exe --proto_path=$(PkgGoogle_Protobuf_Tools)\tools -I=protodef --csharp_out=protodef/protoFiles protodef/scg_test.proto" />
+    <Exec Command="$(PkgGoogle_Protobuf_Tools)\tools\windows_x64\protoc.exe --proto_path=$(PkgGoogle_Protobuf_Tools)\tools -I=$(SolutionDir)..\protodef --csharp_out=$(SolutionDir)..\protodef\protoFiles $(SolutionDir)..\protodef\scg_test.proto" />
   </Target>
 
 </Project>
