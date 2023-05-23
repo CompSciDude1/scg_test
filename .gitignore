@@ -1,4 +1,7 @@
-# Ignore Visual Studio artifacts
+# Ignore Visual Studio artifacts for CMake projects
+build
+
+# Ignore Visual Studio artifacts for C# solutions
 .vs
 bin
 obj
