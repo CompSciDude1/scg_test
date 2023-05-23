@@ -12,8 +12,10 @@ public class Program
 
         // Set the members
         {
-            var oTimeNow = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(DateTime.UtcNow);
-            oScgMessage.Timestamp = oTimeNow;
+            var oTimeNow = new DateTime(2023, 5, 23, 18, 13, 0);
+            DateTime oTimeNowUTC = oTimeNow.ToUniversalTime();
+            var oTimestampNow = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(oTimeNowUTC);
+            oScgMessage.Timestamp = oTimestampNow;
             string oNotes = "Hello World!";
             oScgMessage.Notes = oNotes;
         }
