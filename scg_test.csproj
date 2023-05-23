@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.23.1" />
-    <PackageReference Include="Google.Protobuf.Tools" Version="3.23.1" />
+    <PackageReference Include="Google.Protobuf" Version="3.23.1" GeneratePathProperty="true" />
+    <PackageReference Include="Google.Protobuf.Tools" Version="3.23.1" GeneratePathProperty="true" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="C:\Users\CompS\.nuget\packages\google.protobuf.tools\3.23.1\tools\windows_x64\protoc.exe --proto_path=C:\Users\CompS\.nuget\packages\google.protobuf.tools\3.23.1\tools -I=protodef --csharp_out=protodef/protoFiles protodef/scg_test.proto" />
+    <Exec Command="$(PkgGoogle_Protobuf_Tools)\tools\windows_x64\protoc.exe --proto_path=$(PkgGoogle_Protobuf_Tools)\tools -I=protodef --csharp_out=protodef/protoFiles protodef/scg_test.proto" />
   </Target>
 
 </Project>
