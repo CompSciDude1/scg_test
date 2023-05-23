@@ -30,12 +30,12 @@ if(MSVC AND protobuf_MSVC_STATIC_RUNTIME)
 endif()
 
 foreach(example scg_test)
-  set(PROTO_IN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/protodef)
+  set(PROTO_IN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../protodef)
   set(${example}_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/${example}.cpp)
   set(${example}_PROTOS ${PROTO_IN_DIR}/${example}.proto)
 
   #Code Generation
-  set(PROTO_OUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/protodef/protoFiles)
+  set(PROTO_OUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../protodef/protoFiles)
   if(protobuf_MODULE_COMPATIBLE) #Legacy Support
     protobuf_generate_cpp(${PROTO_OUT_DIR}/${example}_PROTO_SRCS ${PROTO_OUT_DIR}/${example}_PROTO_HDRS ${${example}_PROTOS})
     list(APPEND ${example}_SRCS ${${example}_PROTO_SRCS} ${${example}_PROTO_HDRS})
@@ -55,7 +55,7 @@ foreach(example scg_test)
 # Copy scb_test.pb to build directory
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/protomessage/scg_test.pb"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../protomessage/scg_test.pb"
     "${CMAKE_CURRENT_BINARY_DIR}/protomessage/scg_test.pb")
 
 # Copy dependencies to binary directory
