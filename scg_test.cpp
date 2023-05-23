@@ -35,7 +35,7 @@ void TestSCG_TestMessage() {
 int main(int a_iArgc, char** a_ppchArgv) {
 	//TestSCG_TestMessage();
 
-	std::string szPROTO_MESSAGE{ "../source/protomessage/scg_test.pb" };
+	std::string szPROTO_MESSAGE{ "protomessage/scg_test.pb" };
 	std::ifstream ifs;
 	ifs.open(szPROTO_MESSAGE);
 	if (!ifs.is_open()) {
