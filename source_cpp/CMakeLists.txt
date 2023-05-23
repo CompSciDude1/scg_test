@@ -57,7 +57,7 @@ foreach(example scg_test)
 # Copy scb_test.pb to build directory
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/protomessage/scg_test.pb"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../protomessage/scg_test.pb"
     "${CMAKE_CURRENT_BINARY_DIR}/protomessage/scg_test.pb")
 
 # Copy dependencies to binary directory
