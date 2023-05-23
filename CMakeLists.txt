@@ -51,4 +51,23 @@ foreach(example scg_test)
     protobuf_generate(TARGET ${executable_name})
   endif()
 
+set(PROTO_BIN_DIR "C:/vcpkg-2023.04.15/packages/protobuf_x64-windows/debug/bin")
+add_custom_command(TARGET ${example}_cpp POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${PROTO_BIN_DIR}/libprotobufd.dll"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotobufd.dll")
+add_custom_command(TARGET ${example}_cpp POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${PROTO_BIN_DIR}/libprotobuf-lited.dll"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotobuf-lited.dll")
+add_custom_command(TARGET ${example}_cpp POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${PROTO_BIN_DIR}/libprotocd.dll"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotocd.dll")
+set(ZLIB_BIN_DIR "C:/vcpkg-2023.04.15/packages/zlib_x64-windows/debug/bin")
+add_custom_command(TARGET ${example}_cpp POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${ZLIB_BIN_DIR}/zlibd1.dll"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zlibd1.dll")
+
 endforeach()
