@@ -17,5 +17,11 @@ public class Program
         System.Console.WriteLine("SCG.Test.TestMessage oScgMessage as JSON string");
         var oJsonWriter = new JsonFormatter(JsonFormatter.Settings.Default);
         System.Console.WriteLine(oJsonWriter.Format(oScgMessage));
+        oStream.Close();
+        if (oStream.CanRead == true)
+        {
+            System.Console.WriteLine("Failed to close " + szPROTO_MESSAGE);
+            return;
+        }
     }
 }
