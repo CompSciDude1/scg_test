@@ -59,23 +59,38 @@ add_custom_command(TARGET ${example}_cpp POST_BUILD
     "${CMAKE_CURRENT_BINARY_DIR}/protomessage/scg_test.pb")
 
 # Copy dependencies to binary directory
-set(PROTO_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-windows/debug/bin")
+# Append d to library file name
+set(DEBUG_CHAR "")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(DEBUG_CHAR "d")
+endif()
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(PROTO_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-windows/debug/bin")
+else()
+    set(PROTO_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-windows/bin")
+endif()
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${PROTO_BIN_DIR}/libprotobufd.dll"
-    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotobufd.dll")
+    "${PROTO_BIN_DIR}/libprotobuf${DEBUG_CHAR}.dll"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotobuf${DEBUG_CHAR}.dll")
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${PROTO_BIN_DIR}/libprotobuf-lited.dll"
-    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotobuf-lited.dll")
+    "${PROTO_BIN_DIR}/libprotobuf-lite${DEBUG_CHAR}.dll"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotobuf-lite${DEBUG_CHAR}.dll")
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${PROTO_BIN_DIR}/libprotocd.dll"
-    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotocd.dll")
-set(ZLIB_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-windows/debug/bin")
+    "${PROTO_BIN_DIR}/libprotoc${DEBUG_CHAR}.dll"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotoc${DEBUG_CHAR}.dll")
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(ZLIB_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-windows/debug/bin")
+else()
+    set(ZLIB_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-windows/bin")
+endif()
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${ZLIB_BIN_DIR}/zlibd1.dll"
-    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zlibd1.dll")
+    "${ZLIB_BIN_DIR}/zlib${DEBUG_CHAR}1.dll"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zlib${DEBUG_CHAR}1.dll")
 
 endforeach()
