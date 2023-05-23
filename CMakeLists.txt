@@ -8,8 +8,9 @@ cmake_minimum_required(VERSION 2.8.12)
 project(scg_test)
 
 # Find required protobuf package
-set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "C:/vcpkg-2023.04.15/packages/protobuf_x64-windows")
+set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-windows")
 find_package(protobuf CONFIG REQUIRED)
+find_package(zlib REQUIRED)
 
 if(protobuf_VERBOSE)
   message(STATUS "Using Protocol Buffers ${protobuf_VERSION}")
@@ -51,7 +52,14 @@ foreach(example scg_test)
     protobuf_generate(TARGET ${executable_name})
   endif()
 
-set(PROTO_BIN_DIR "C:/vcpkg-2023.04.15/packages/protobuf_x64-windows/debug/bin")
+# Copy scb_test.pb to build directory
+add_custom_command(TARGET ${example}_cpp POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/protomessage/scg_test.pb"
+    "${CMAKE_CURRENT_BINARY_DIR}/protomessage/scg_test.pb")
+
+# Copy dependencies to binary directory
+set(PROTO_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-windows/debug/bin")
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
     "${PROTO_BIN_DIR}/libprotobufd.dll"
@@ -64,7 +72,7 @@ add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
     "${PROTO_BIN_DIR}/libprotocd.dll"
     "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotocd.dll")
-set(ZLIB_BIN_DIR "C:/vcpkg-2023.04.15/packages/zlib_x64-windows/debug/bin")
+set(ZLIB_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-windows/debug/bin")
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
     "${ZLIB_BIN_DIR}/zlibd1.dll"
