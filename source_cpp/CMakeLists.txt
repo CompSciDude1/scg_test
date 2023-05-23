@@ -49,13 +49,15 @@ foreach(example scg_test)
     target_link_libraries(${executable_name} ${PROTOBUF_LIBRARIES})
   else()
     target_link_libraries(${executable_name} protobuf::libprotobuf)
-    protobuf_generate(TARGET ${executable_name})
+    protobuf_generate(TARGET ${executable_name}
+      IMPORT_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/..
+    )
   endif()
 
 # Copy scb_test.pb to build directory
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/../protomessage/scg_test.pb"
+    "${CMAKE_CURRENT_SOURCE_DIR}/protomessage/scg_test.pb"
     "${CMAKE_CURRENT_BINARY_DIR}/protomessage/scg_test.pb")
 
 # Copy dependencies to binary directory
