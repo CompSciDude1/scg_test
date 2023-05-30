@@ -27,6 +27,8 @@ public class Program
     public static void Main(string[] args)
     {
         //TestSCG_TestMessage();
+
+        // Open scg_test.pb
         string szPROTO_MESSAGE = "protomessage/scg_test.pb";
         System.IO.FileStream oStream = System.IO.File.Open(szPROTO_MESSAGE, FileMode.Open);
         if (oStream.CanRead == false )
@@ -34,10 +36,20 @@ public class Program
             System.Console.WriteLine("Failed to open " +  szPROTO_MESSAGE);
             return;
         }
+
+        // Read message
         SCG.Test.TestMessage oScgMessage = SCG.Test.TestMessage.Parser.ParseFrom(oStream);
+
+        // Convert to JSON
+        // Make the JSON pretty
+        var oSettings = JsonFormatter.Settings.Default.WithIndentation("  ");
+        var oJsonWriter = new JsonFormatter(oSettings);
+
+        // Print message in JSON format
         System.Console.WriteLine("SCG.Test.TestMessage oScgMessage as JSON string");
-        var oJsonWriter = new JsonFormatter(JsonFormatter.Settings.Default);
         System.Console.WriteLine(oJsonWriter.Format(oScgMessage));
+
+        // Close scg_test.pb
         oStream.Close();
         if (oStream.CanRead == true)
         {
