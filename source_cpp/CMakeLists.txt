@@ -10,7 +10,6 @@ project(scg_test)
 # Find required protobuf package
 set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-windows")
 find_package(protobuf CONFIG REQUIRED)
-find_package(zlib REQUIRED)
 
 if(protobuf_VERBOSE)
   message(STATUS "Using Protocol Buffers ${protobuf_VERSION}")
