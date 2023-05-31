@@ -79,33 +79,43 @@ set(DEBUG_CHAR "")
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(DEBUG_CHAR "d")
 endif()
+# Determine library extension
+if (UNIX AND NOT APPLE)
+    set(LIBRARY_EXTENSION ".a")
+    set(LIBRARY_DIRECTORY "lib")
+elseif(WIN32)
+    set(LIBRARY_EXTENSION ".dll")
+    set(LIBRARY_DIRECTORY "bin")
+else()
+    set(LIBRARY_EXTENSION ".")
+endif()
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(PROTO_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-${SCG_OS}/debug/bin")
+    set(PROTO_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-${SCG_OS}/debug/${LIBRARY_DIRECTORY}")
 else()
-    set(PROTO_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-${SCG_OS}/bin")
+    set(PROTO_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-${SCG_OS}/${LIBRARY_DIRECTORY}")
 endif()
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${PROTO_BIN_DIR}/libprotobuf${DEBUG_CHAR}.dll"
-    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotobuf${DEBUG_CHAR}.dll")
+    "${PROTO_BIN_DIR}/libprotobuf${DEBUG_CHAR}${LIBRARY_EXTENSION}"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotobuf${DEBUG_CHAR}${LIBRARY_EXTENSION}")
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${PROTO_BIN_DIR}/libprotobuf-lite${DEBUG_CHAR}.dll"
-    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotobuf-lite${DEBUG_CHAR}.dll")
+    "${PROTO_BIN_DIR}/libprotobuf-lite${DEBUG_CHAR}${LIBRARY_EXTENSION}"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotobuf-lite${DEBUG_CHAR}${LIBRARY_EXTENSION}")
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${PROTO_BIN_DIR}/libprotoc${DEBUG_CHAR}.dll"
-    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotoc${DEBUG_CHAR}.dll")
+    "${PROTO_BIN_DIR}/libprotoc${DEBUG_CHAR}${LIBRARY_EXTENSION}"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotoc${DEBUG_CHAR}${LIBRARY_EXTENSION}")
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(ZLIB_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-${SCG_OS}/debug/bin")
+    set(ZLIB_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-${SCG_OS}/debug/${LIBRARY_DIRECTORY}")
 else()
-    set(ZLIB_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-${SCG_OS}/bin")
+    set(ZLIB_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-${SCG_OS}/${LIBRARY_DIRECTORY}")
 endif()
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${ZLIB_BIN_DIR}/zlib${DEBUG_CHAR}1.dll"
-    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zlib${DEBUG_CHAR}1.dll")
+    "${ZLIB_BIN_DIR}/zlib${DEBUG_CHAR}1${LIBRARY_EXTENSION}"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zlib${DEBUG_CHAR}1${LIBRARY_EXTENSION}")
 
 endforeach()
