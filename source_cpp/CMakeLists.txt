@@ -7,7 +7,11 @@ cmake_minimum_required(VERSION 2.8.12)
 # Project
 project(scg_test)
 
-message(STATUS "CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
+# The developer must set CMAKE_BUILD_TYPE to one of the CMAKE_CONFIGURATION_TYPES
+list(FIND CMAKE_CONFIGURATION_TYPES "${CMAKE_BUILD_TYPE}" VALID_BUILD_TYPE)
+if (VALID_BUILD_TYPE EQUAL -1)
+    message(FATAL_ERROR "CMAKE_BUILD_TYPE must be one of ${CMAKE_CONFIGURATION_TYPES}.")
+endif()
 
 # Determine operating system suffix
 if (UNIX AND NOT APPLE)
@@ -160,3 +164,9 @@ add_custom_command(TARGET ${example}_cpp POST_BUILD
     "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${ZLIB_LIBRARY}")
 
 endforeach()
+
+# Remind the user to switch to the correct configuration if using Visual Studio
+string(FIND "${CMAKE_GENERATOR}" "Visual Studio" VS_GENERATOR)
+if (VS_GENERATOR EQUAL 0)
+    message(WARNING "Make sure to set the configuration to ${CMAKE_BUILD_TYPE} in Visual Studio!")
+endif()
