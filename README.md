@@ -10,6 +10,31 @@ Please follow the build instructions described below for your language of choice
 
 ## C++ Solution
 
+### Linux
+
+* Install CMake
+* Open CMake GUI
+* Specify the source directory, which is the same location as the CMakeLists.txt
+* Specify the build directory
+* Add CMAKE_BUILD_TYPE variable with String as its type with Debug as its value
+* Click Configure
+  * Specify Unix Makefiles as the generator
+  * Specify x64 as the platform
+  * Click Finish
+* Click Generate
+* Open Terminal
+* Build the project
+  * Change directory to the build directory
+  * Type `cmake --build . --target all`
+  * Press Enter
+* Run the scg_test_cpp executable
+  * Type `./scg_test_cpp`
+  * Press Enter
+
+NOTE:  You can simplify the steps after "Click Generate" if you use an IDE, such as Qt Creator.
+
+### Windows
+
 * Install CMake
 * Open CMake GUI
 * Specify the source directory, which is the same location as the CMakeLists.txt
