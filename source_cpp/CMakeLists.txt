@@ -108,6 +108,16 @@ add_custom_command(TARGET ${example}_cpp POST_BUILD
     "${PROTO_BIN_DIR}/libprotoc${DEBUG_CHAR}${LIBRARY_EXTENSION}"
     "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotoc${DEBUG_CHAR}${LIBRARY_EXTENSION}")
 
+# Determine proper zlib library name
+if (UNIX AND NOT APPLE)
+    set(ZLIB_LIBRARY "libz${LIBRARY_EXTENSION}")
+elseif(WIN32)
+    set(ZLIB_LIBRARY "zlib${DEBUG_CHAR}1${LIBRARY_EXTENSION}")
+else()
+    message(STATUS "Unknown operating system.  Using zlib${DEBUG_CHAR}${LIBRARY_EXTENSION} for the zlib library.")
+    set(LIBRARY_EXTENSION "zlib${DEBUG_CHAR}${LIBRARY_EXTENSION}")
+endif()
+
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(ZLIB_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-${SCG_OS}/debug/${LIBRARY_DIRECTORY}")
 else()
@@ -115,7 +125,7 @@ else()
 endif()
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${ZLIB_BIN_DIR}/zlib${DEBUG_CHAR}1${LIBRARY_EXTENSION}"
-    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zlib${DEBUG_CHAR}1${LIBRARY_EXTENSION}")
+    "${ZLIB_BIN_DIR}/${ZLIB_LIBRARY}"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${ZLIB_LIBRARY}")
 
 endforeach()
