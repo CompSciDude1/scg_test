@@ -21,8 +21,62 @@ else()
   set(SCG_OS "null")
 endif()
 
+set(PROTO_LIB_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-${SCG_OS})
+set(ZLIB_LIB_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-${SCG_OS})
+
+# Extract dependencies before build
+if (UNIX AND NOT APPLE)
+    set(PROTO_LIB_TAR ${PROTO_LIB_ROOT}.tar)
+    set(ZLIB_LIB_TAR ${ZLIB_LIB_ROOT}.tar)
+    set(PROTO_LIB_ZIP ${PROTO_LIB_TAR}.gz)
+    set(ZLIB_LIB_ZIP ${ZLIB_LIB_TAR}.gz)
+
+    message(STATUS "Checking if gunzip program is available.")
+    find_program(GUNZIP_PROGRAM "gunzip" PATHS "/usr/bin")
+    if (GUNZIP_PROGRAM-NOTFOUND)
+        message(ERROR "gunzip program not found.  Please extract protobuf_x64-linux and zlib_x64-linux manually and then rerun CMake configuration.")
+        return()
+    endif()
+    message(STATUS "Checking if tar program is available.")
+    find_program(TAR_PROGRAM "tar" PATHS "/usr/bin")
+    if (TAR_PROGRAM-NOTFOUND)
+        message(ERROR "tar program not found.  Please extract protobuf_x64-linux and zlib_x64-linux manually and then rerun CMake configuration.")
+        return()
+    endif()
+    message(STATUS "gunzip and tar programs found.")
+    message(STATUS "Decompress protobuf_x64-linux.tar.gz to protobuf_x64-linux.tar.")
+    execute_process(COMMAND ${GUNZIP_PROGRAM} -k ${PROTO_LIB_ZIP})
+    message(STATUS "Done.")
+    message(STATUS "Decompress zlib_x64-linux.tar.gz to zlib_x64-linux.tar.")
+    execute_process(COMMAND ${GUNZIP_PROGRAM} -k ${ZLIB_LIB_ZIP})
+    message(STATUS "Done.")
+    message(STATUS "Extracting protobuf_x64-linux.tar to ${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-linux.")
+    execute_process(COMMAND ${TAR_PROGRAM} -xpf ${PROTO_LIB_TAR} -C ${CMAKE_CURRENT_SOURCE_DIR}/..)
+    message(STATUS "Done.")
+    message(STATUS "Extracting zlib_x64-linux.tar to ${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-linux.")
+    execute_process(COMMAND ${TAR_PROGRAM} -xpf ${ZLIB_LIB_TAR} -C ${CMAKE_CURRENT_SOURCE_DIR}/..)
+    message(STATUS "Done.")
+elseif(WIN32)
+    set(PROTO_LIB_ZIP ${PROTO_LIB_TAR}.zip)
+    set(ZLIB_LIB_ZIP ${ZLIB_LIB_ZIP}.zip)
+
+    message(STATUS "Checking if 7-zip program is available.")
+    find_program(SZIP_PROGRAM "7z.exe" PATHS "C:/Program Files/7-Zip")
+    if (SZIP_PROGRAM-NOTFOUND)
+        message(ERROR "7-zip program not found.  Please extract protobuf_x64-windows and zlib_x64-windows manually and then rerun CMake configuration.")
+        return()
+    endif()
+    message(STATUS "7-zip program found.")
+    message(STATUS "Extracting protobuf_x64-windows.zip to ${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-windows")
+    execute_process(COMMAND ${SZIP_PROGRAM} x ${PROTO_LIB_ZIP} -o${CMAKE_CURRENT_SOURCE_DIR} -y)
+    message(STATUS "Done.")
+    message(STATUS "Extracting zlib_x64-windows.zip to ${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-windows.")
+    execute_process(COMMAND ${SZIP_PROGRAM} x ${ZLIB_LIB_ZIP} -o${CMAKE_CURRENT_SOURCE_DIR} -y)
+    message(STATUS "Done.")
+endif()
+
 # Find required protobuf package
-set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-${SCG_OS}")
+set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${PROTO_LIB_ROOT})
 find_package(protobuf CONFIG REQUIRED)
 
 if(protobuf_VERBOSE)
@@ -43,6 +97,7 @@ if(MSVC AND protobuf_MSVC_STATIC_RUNTIME)
 endif()
 
 foreach(example scg_test)
+
   set(PROTO_IN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../protodef)
   set(${example}_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/${example}.cpp)
   set(${example}_PROTOS ${PROTO_IN_DIR}/${example}.proto)
@@ -91,21 +146,21 @@ else()
 endif()
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(PROTO_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-${SCG_OS}/debug/${LIBRARY_DIRECTORY}")
+    set(PROTO_LIB_BIN_DIR "${PROTO_LIB_ROOT}/debug/${LIBRARY_DIRECTORY}")
 else()
-    set(PROTO_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-${SCG_OS}/${LIBRARY_DIRECTORY}")
+    set(PROTO_LIB_BIN_DIR "${PROTO_LIB_ROOT}/${LIBRARY_DIRECTORY}")
 endif()
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${PROTO_BIN_DIR}/libprotobuf${DEBUG_CHAR}${LIBRARY_EXTENSION}"
+    "${PROTO_LIB_BIN_DIR}/libprotobuf${DEBUG_CHAR}${LIBRARY_EXTENSION}"
     "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotobuf${DEBUG_CHAR}${LIBRARY_EXTENSION}")
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${PROTO_BIN_DIR}/libprotobuf-lite${DEBUG_CHAR}${LIBRARY_EXTENSION}"
+    "${PROTO_LIB_BIN_DIR}/libprotobuf-lite${DEBUG_CHAR}${LIBRARY_EXTENSION}"
     "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotobuf-lite${DEBUG_CHAR}${LIBRARY_EXTENSION}")
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${PROTO_BIN_DIR}/libprotoc${DEBUG_CHAR}${LIBRARY_EXTENSION}"
+    "${PROTO_LIB_BIN_DIR}/libprotoc${DEBUG_CHAR}${LIBRARY_EXTENSION}"
     "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotoc${DEBUG_CHAR}${LIBRARY_EXTENSION}")
 
 # Determine proper zlib library name
@@ -119,13 +174,13 @@ else()
 endif()
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(ZLIB_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-${SCG_OS}/debug/${LIBRARY_DIRECTORY}")
+    set(ZLIB_LIB_BIN_DIR "${ZLIB_LIB_ROOT}/debug/${LIBRARY_DIRECTORY}")
 else()
-    set(ZLIB_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-${SCG_OS}/${LIBRARY_DIRECTORY}")
+    set(ZLIB_LIB_BIN_DIR "${ZLIB_LIB_ROOT}/${LIBRARY_DIRECTORY}")
 endif()
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${ZLIB_BIN_DIR}/${ZLIB_LIBRARY}"
+    "${ZLIB_LIB_BIN_DIR}/${ZLIB_LIBRARY}"
     "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${ZLIB_LIBRARY}")
 
 endforeach()
