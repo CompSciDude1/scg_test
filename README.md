@@ -12,8 +12,6 @@ Please follow the build instructions described below for your language of choice
 
 ### Linux
 
-* Extract protobuf_x64-linux.tar.gz to protobuf_x64-linux using your favorite archive manager
-* Extract zlib_x64-linux.tar.gz to zlib_x64-linux using your favorite archive manager
 * Install CMake
 * Open CMake GUI
 * Specify the source directory, which is the same location as the CMakeLists.txt
@@ -37,8 +35,6 @@ NOTE:  You can simplify the steps after "Click Generate" if you use an IDE, such
 
 ### Windows
 
-* Extract protobuf_x64-windows.zip to protobuf_x64-windows using your favorite archive manager
-* Extract zlib_x64-windows.zip to zlib_x64-windows using your favorite archive manager
 * Install CMake
 * Open CMake GUI
 * Specify the source directory, which is the same location as the CMakeLists.txt
