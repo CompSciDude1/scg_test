@@ -7,8 +7,22 @@ cmake_minimum_required(VERSION 2.8.12)
 # Project
 project(scg_test)
 
+message(STATUS "CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
+
+# Determine operating system suffix
+if (UNIX AND NOT APPLE)
+  message(STATUS "Assuming operating system is Linux-based.")
+  set(SCG_OS "linux")
+elseif(WIN32)
+  message(STATUS "Assuming operating system is Windows.")
+  set(SCG_OS "windows")
+else()
+  message(STATUS "Unknown operating system.  Using \"null\".")
+  set(SCG_OS "null")
+endif()
+
 # Find required protobuf package
-set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-windows")
+set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-${SCG_OS}")
 find_package(protobuf CONFIG REQUIRED)
 
 if(protobuf_VERBOSE)
@@ -67,9 +81,9 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(PROTO_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-windows/debug/bin")
+    set(PROTO_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-${SCG_OS}/debug/bin")
 else()
-    set(PROTO_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-windows/bin")
+    set(PROTO_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protobuf_x64-${SCG_OS}/bin")
 endif()
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
@@ -85,9 +99,9 @@ add_custom_command(TARGET ${example}_cpp POST_BUILD
     "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/libprotoc${DEBUG_CHAR}.dll")
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(ZLIB_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-windows/debug/bin")
+    set(ZLIB_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-${SCG_OS}/debug/bin")
 else()
-    set(ZLIB_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-windows/bin")
+    set(ZLIB_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/zlib_x64-${SCG_OS}/bin")
 endif()
 add_custom_command(TARGET ${example}_cpp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
