@@ -7,6 +7,12 @@ cmake_minimum_required(VERSION 2.8.12)
 # Project
 project(scg_test)
 
+# Set the CMAKE_CONFIGURATION_TYPES for single configuration generators (Ninja, Unix Makefiles, et cetera)
+if (NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_CONFIGURATION_TYPES "Debug;Release;MinSizeRel;RelWithDebInfo"
+      CACHE STRING "List of supported configurations")
+endif()
+
 # The developer must set CMAKE_BUILD_TYPE to one of the CMAKE_CONFIGURATION_TYPES
 list(FIND CMAKE_CONFIGURATION_TYPES "${CMAKE_BUILD_TYPE}" VALID_BUILD_TYPE)
 if (VALID_BUILD_TYPE EQUAL -1)
